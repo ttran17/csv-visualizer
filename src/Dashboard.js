@@ -126,7 +126,7 @@ export default class Dashboard extends Component {
             return;
         }
         this.setState(state => {
-            if (state.currentIndex < state.data.length) {
+            if (state.currentIndex >= 0 && state.currentIndex < state.data.length) {
                 return {
                     currentIndex: state.currentIndex + 1,
                     inputIndex: state.currentIndex + 2
