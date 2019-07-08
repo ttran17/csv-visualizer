@@ -1,0 +1,18 @@
+{
+  "files": {
+    "main.css": "/csv-visualizer/static/css/main.465affb9.chunk.css",
+    "main.js": "/csv-visualizer/static/js/main.bc875e05.chunk.js",
+    "main.js.map": "/csv-visualizer/static/js/main.bc875e05.chunk.js.map",
+    "runtime~main.js": "/csv-visualizer/static/js/runtime~main.c6e7c234.js",
+    "runtime~main.js.map": "/csv-visualizer/static/js/runtime~main.c6e7c234.js.map",
+    "static/css/2.3f73239b.chunk.css": "/csv-visualizer/static/css/2.3f73239b.chunk.css",
+    "static/js/2.3d57352b.chunk.js": "/csv-visualizer/static/js/2.3d57352b.chunk.js",
+    "static/js/2.3d57352b.chunk.js.map": "/csv-visualizer/static/js/2.3d57352b.chunk.js.map",
+    "index.html": "/csv-visualizer/index.html",
+    "precache-manifest.d42deffccf8cce143eac9401cbefc6f7.js": "/csv-visualizer/precache-manifest.d42deffccf8cce143eac9401cbefc6f7.js",
+    "service-worker.js": "/csv-visualizer/service-worker.js",
+    "static/css/2.3f73239b.chunk.css.map": "/csv-visualizer/static/css/2.3f73239b.chunk.css.map",
+    "static/css/main.465affb9.chunk.css.map": "/csv-visualizer/static/css/main.465affb9.chunk.css.map",
+    "static/media/bootstrap.css": "/csv-visualizer/static/media/glyphicons-halflings-regular.fa277232.woff"
+  }
+}
