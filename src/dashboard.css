@@ -80,6 +80,9 @@ body {
   margin-left: 0;
 }
 
+#navbar-input-file {
+  display: none;
+}
 
 /*
  * Main content

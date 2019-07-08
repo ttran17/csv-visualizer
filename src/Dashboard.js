@@ -177,15 +177,15 @@ export default class Dashboard extends Component {
 
         const keyValuePairs = this.state.keys
             .map(k => {
-                if (k.display === false) {
-                    return null;
+                if (k.display) {
+                    return (
+                        <React.Fragment key={k.fieldname}>
+                            <dt>{k.fieldname}</dt>
+                            <dd>{row[k.fieldname]}</dd>
+                        </React.Fragment>
+                    );
                 }
-                return (
-                    <React.Fragment key={k.fieldname}>
-                        <dt>{k.fieldname}</dt>
-                        <dd>{row[k.fieldname]}</dd>
-                    </React.Fragment>
-                );
+                return null;
             })
             .filter(obj => obj !== null);
 
