@@ -166,3 +166,18 @@ body {
 {
   white-space: normal;
 }
+
+.panel.panel-default.panel-search-results-info {
+  box-shadow: none;
+  border: none;
+  background-color: cornflowerblue;
+  color: white;
+}
+
+.showingSearchClassName {
+  opacity: 100%;
+}
+
+.hidingSearchClassName {
+  opacity: 0;
+}

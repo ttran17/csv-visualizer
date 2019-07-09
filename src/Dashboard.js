@@ -6,17 +6,28 @@ import Navbar from "./Navbar";
 import Sidebar from "./Sidebar";
 import MainPanel from "./MainPanel";
 
+import CachedIndex from "./CachedIndex";
+
 export default class Dashboard extends Component {
     constructor(props) {
         super(props);
         this.state = {
             currentFilename: "Selected File",
-            currentIndex: -1,
+            absoluteIndex: 0,
+            actualIndex: -1,
+            displayIndex: 0,
             inputIndex: 0,
             showAll: false,
+            inputSearch: "",
             keys: [],
-            data: []
-        }
+            data: [],
+            dataLengthOG: 0,
+            dataOG: [],
+            showingSearch: false
+        };
+
+        this.cachedIndex = null;
+        this.uuid = CachedIndex.getDefaultUuidKey(); // TODO: someday make absolutely certain this is unique uuid ...
     }
 
     handleOnFileChange = (e) => {
@@ -28,21 +39,27 @@ export default class Dashboard extends Component {
         let reader = new FileReader();
 
         reader.onload = (e) => {
-            const data = csvParse(e.target.result);
-            const keys = Object.keys(data[0]).map(k => {
+            const rawdata = csvParse(e.target.result);
+            const keys = Object.keys(rawdata[0]).map(k => {
                 return {
                     fieldname: k,
                     display: true
                 }
             });
+            const data = rawdata.map((row,i) => Object.assign({}, {[this.uuid]: i}, row));
             this.setState({
-                currentIndex: 0,
+                absoluteIndex: 1,
+                actualIndex: 0,
+                displayIndex: 1,
                 inputIndex: 1,
                 showAll: true,
                 keys: keys,
-                data: data
+                data: data,
+                dataLengthOG: data.length,
+                dataOG: data.map(d => d)
             });
-            console.log(Object.keys(data[0]));
+            this.cachedIndex = new CachedIndex();
+            console.log(data[0]);
         };
 
         reader.readAsText(e.target.files[0]);
@@ -89,10 +106,13 @@ export default class Dashboard extends Component {
             return;
         }
         this.setState(state => {
-            if (state.currentIndex > 0) {
+            if (state.actualIndex > 0) {
+                const nextIndex = state.actualIndex - 1;
                 return {
-                    currentIndex: state.currentIndex - 1,
-                    inputIndex: state.currentIndex
+                    absoluteIndex: state.data[nextIndex][this.uuid]+1,
+                    actualIndex: nextIndex,
+                    displayIndex: nextIndex + 1,
+                    inputIndex: nextIndex + 1
                 }
             } else {
                 return  null;
@@ -106,10 +126,13 @@ export default class Dashboard extends Component {
             return;
         }
         this.setState(state => {
-            if (state.currentIndex >= 0 && state.currentIndex < state.data.length) {
+            if (state.actualIndex >= 0 && state.actualIndex < state.data.length-1) {
+                const nextIndex = state.actualIndex + 1;
                 return {
-                    currentIndex: state.currentIndex + 1,
-                    inputIndex: state.currentIndex + 2
+                    absoluteIndex: state.data[nextIndex][this.uuid]+1,
+                    actualIndex: nextIndex,
+                    displayIndex: nextIndex + 1,
+                    inputIndex: nextIndex + 1
                 }
             } else {
                 return  null;
@@ -130,12 +153,58 @@ export default class Dashboard extends Component {
                 const index = +state.inputIndex;
                 if (Number.isInteger(index) && index > 0 && index <= state.data.length) {
                     return {
-                        currentIndex: index - 1
+                        absoluteIndex: state.data[index-1][this.uuid]+1,
+                        actualIndex: index-1,
+                        displayIndex: index
                     }
                 }
                 alert("input " + state.inputIndex + " is invalid");
                 return null;
             });
+        }
+    };
+
+    handleSearchInputChange = (event) => {
+        const value = event.target.value;
+        this.setState({
+            inputSearch: value
+        });
+    };
+
+    handleSearchInputClear = () => {
+        this.setState(state => {
+            return {
+                absoluteIndex: 1,
+                actualIndex: 0,
+                displayIndex: 1,
+                inputIndex: 1,
+                data: state.dataOG.map(d => d),
+                showingSearch: false
+            }
+        });
+    };
+
+    handleSearchRequest = (event) => {
+        if (event.key === "Enter") {
+            if (this.state.inputSearch.length == 0) {
+                    this.handleSearchInputClear();
+                return;
+            }
+
+            const searchKeys = this.state.keys.map(k => k.fieldname);
+            const results = this.cachedIndex.search(this.state.data, searchKeys, this.state.inputSearch);
+            if (results.length === 0) {
+                alert("No matches found: " + this.state.inputSearch);
+                return;
+            }
+            this.setState({
+                absoluteIndex: results[0][this.uuid]+1,
+                actualIndex: 0,
+                displayIndex: 1,
+                inputIndex: 1,
+                data: results.map(r => r),
+                showingSearch: true
+            })
         }
     };
 
@@ -149,13 +218,21 @@ export default class Dashboard extends Component {
 
                     <MainPanel handlePreviousClick={this.handlePreviousClick}
                                handleNextClick={this.handleNextClick}
+                               absoluteIndex={this.state.absoluteIndex}
+                               displayIndex={this.state.displayIndex}
                                inputIndex={this.state.inputIndex}
                                handleTextInputChange={this.handleTextInputChange}
                                handleOnSubmit={this.handleOnSubmit}
-                               currentIndex={this.state.currentIndex+1}
-                               dataLength={this.state.data.length === 0 ? 0 : this.state.data.length+1}
-                               row={this.state.data[this.state.currentIndex]}
+                               dataLengthOG={this.state.dataLengthOG}
+                               dataLength={this.state.data.length}
+                               row={this.state.data[this.state.actualIndex]}
                                keys={this.state.keys}
+                               inputSearch={this.state.inputSearch}
+                               handleSearchInputChange={this.handleSearchInputChange}
+                               handleSearchRequest={this.handleSearchRequest}
+                               handleSearchInputClear={this.handleSearchInputClear}
+                               showingSearch={this.state.showingSearch}
+
                     />
                 </div>
             </React.Fragment>
