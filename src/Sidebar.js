@@ -3,6 +3,19 @@ import React, {Component} from "react";
 export default class Sidebar extends Component {
 
     render() {
+        const displayedKeys = this.props.keys.map(k => {
+            return (
+                <li key={k.fieldname}>
+                    <div className="checkbox">
+                        <label>
+                            <input name={k.fieldname} type="checkbox" checked={k.display} onChange={ e => {this.props.onChangeShowField(e,k)} }/>
+                            {k.fieldname}
+                        </label>
+                    </div>
+                </li>
+            );
+        });
+
         return (
             <div className="col-sm-3 col-md-2 sidebar">
                 <div className="page-header">
@@ -12,11 +25,17 @@ export default class Sidebar extends Component {
                             Show All
                         </label>
                     </div>
+                    <div className="checkbox checkbox-2">
+                        <label>
+                            <input name="searchAll" type="checkbox" checked={this.props.showAll} onChange={this.props.onChangeShowAll}/>
+                            Search All
+                        </label>
+                    </div>
                 </div>
 
                 <div className="page-body">
                     <ul className="nav nav-sidebar">
-                        {this.props.displayedKeys}
+                        {displayedKeys}
                     </ul>
                 </div>
             </div>
