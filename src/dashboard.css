@@ -174,10 +174,34 @@ body {
   color: white;
 }
 
-.showingSearchClassName {
+.search-highlight {
+  background-color: #fafa37;
+}
+
+.showing-search-results-info {
   opacity: 100%;
 }
 
-.hidingSearchClassName {
+.hiding-search-results-info {
   opacity: 0;
+}
+
+#showing-search-results-info {
+  box-shadow: none;
+  border: none;
+  background-color: cornflowerblue;
+  color: white;
+}
+
+#no-search-exception-showing-search-results-info {
+  box-shadow: none;
+  border: none;
+  background-color: cornflowerblue;
+  color: white;
+}
+
+#search-exception {
+  background-color: #f0ad4e;
+  border-color: #eea236;
+  color: white;
 }

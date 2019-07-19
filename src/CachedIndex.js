@@ -23,6 +23,19 @@ export default class CachedIndex {
         return defaultUuidKey;
     }
 
+    static actuallyNotCached(docs, keys, uuid) {
+        const index = new FlexSearch({
+            doc: {
+                id: uuid,
+                field: keys
+            }
+        });
+        console.log("building flexsearch index");
+        index.add(docs);
+        console.log("done building flexsearch index");
+        return index;
+    }
+
     search = (docs, keys, str) => {
         let index = null;
         for (let i = 0; i < this.indexes.length; i++) {
@@ -44,7 +57,9 @@ export default class CachedIndex {
                 keys: keys,
                 index: index
             });
+            console.log("building flexsearch index");
             index.add(docs);
+            console.log("done building flexsearch index");
         }
 
         return index.search(str);

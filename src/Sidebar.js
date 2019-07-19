@@ -25,12 +25,6 @@ export default class Sidebar extends Component {
                             Show All
                         </label>
                     </div>
-                    <div className="checkbox checkbox-2">
-                        <label>
-                            <input name="searchAll" type="checkbox" checked={this.props.showAll} onChange={this.props.onChangeShowAll}/>
-                            Search All
-                        </label>
-                    </div>
                 </div>
 
                 <div className="page-body">

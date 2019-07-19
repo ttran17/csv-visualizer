@@ -13,6 +13,7 @@ export default class Dashboard extends Component {
         super(props);
         this.state = {
             currentFilename: "Selected File",
+            fileSize: 0,
             absoluteIndex: 0,
             actualIndex: -1,
             displayIndex: 0,
@@ -23,18 +24,18 @@ export default class Dashboard extends Component {
             data: [],
             dataLengthOG: 0,
             dataOG: [],
+            searchException: false,
             showingSearch: false
         };
 
-        this.cachedIndex = null;
         this.uuid = CachedIndex.getDefaultUuidKey(); // TODO: someday make absolutely certain this is unique uuid ...
+        this.cachedIndex = null;
     }
 
     handleOnFileChange = (e) => {
-        const filename = e.target.files[0].name;
-        this.setState({
-            currentFilename: filename
-        });
+        const file = e.target.files[0];
+        const filename = file.name;
+        const fileSize = file.size/1000000;
 
         let reader = new FileReader();
 
@@ -43,11 +44,14 @@ export default class Dashboard extends Component {
             const keys = Object.keys(rawdata[0]).map(k => {
                 return {
                     fieldname: k,
-                    display: true
+                    display: true,
+                    search: false
                 }
             });
             const data = rawdata.map((row,i) => Object.assign({}, {[this.uuid]: i}, row));
             this.setState({
+                currentFilename: filename,
+                fileSize: fileSize,
                 absoluteIndex: 1,
                 actualIndex: 0,
                 displayIndex: 1,
@@ -58,11 +62,11 @@ export default class Dashboard extends Component {
                 dataLengthOG: data.length,
                 dataOG: data.map(d => d)
             });
-            this.cachedIndex = new CachedIndex();
             console.log(data[0]);
         };
 
-        reader.readAsText(e.target.files[0]);
+        console.log(filename + " is: " + fileSize + " MB");
+        reader.readAsText(file);
     };
 
     onChangeShowAll = (event) => {
@@ -70,7 +74,8 @@ export default class Dashboard extends Component {
         const keys = this.state.keys.map(k => {
             return {
                 fieldname: k.fieldname,
-                display: showAll
+                display: showAll,
+                search: k.search
             }
         });
         this.setState({
@@ -84,7 +89,8 @@ export default class Dashboard extends Component {
             if (k.fieldname === key.fieldname) {
                 return {
                     fieldname: key.fieldname,
-                    display: event.target.checked
+                    display: event.target.checked,
+                    search: key.search
                 }
             } else {
                 return k;
@@ -178,9 +184,17 @@ export default class Dashboard extends Component {
                 actualIndex: 0,
                 displayIndex: 1,
                 inputIndex: 1,
+                inputSearch: "",
                 data: state.dataOG.map(d => d),
+                searchException: false,
                 showingSearch: false
             }
+        });
+    };
+
+    handleSearchException = () => {
+        this.setState({
+            searchException: true
         });
     };
 
@@ -191,9 +205,23 @@ export default class Dashboard extends Component {
                 return;
             }
 
-            const searchKeys = this.state.keys.map(k => k.fieldname);
-            const results = this.cachedIndex.search(this.state.data, searchKeys, this.state.inputSearch);
+            if (this.cachedIndex === null) {
+                this.cachedIndex = CachedIndex.actuallyNotCached(this.state.dataOG.map(d => d), this.state.keys.map(k => k.fieldname), this.uuid)
+            }
+
+            const searchKeys = this.state.keys.filter(k => k.display).map(k => k.fieldname);
+            if (searchKeys.length === 0) {
+                this.handleSearchException();
+                alert("Cannot search without choosing at least one field to display");
+                return;
+            }
+            // const results = this.cachedIndex.search(this.state.data, searchKeys, this.state.inputSearch);
+            const results = this.cachedIndex.search({
+                query: this.state.inputSearch,
+                field: searchKeys
+            });
             if (results.length === 0) {
+                this.handleSearchException();
                 alert("No matches found: " + this.state.inputSearch);
                 return;
             }
@@ -203,8 +231,10 @@ export default class Dashboard extends Component {
                 displayIndex: 1,
                 inputIndex: 1,
                 data: results.map(r => r),
+                searchException: false,
                 showingSearch: true
-            })
+            });
+            console.log(results[0]);
         }
     };
 
@@ -214,7 +244,11 @@ export default class Dashboard extends Component {
                 <Navbar currentFilename={this.state.currentFilename} handleOnFileChange={this.handleOnFileChange} />
 
                 <div className="row">
-                    <Sidebar showAll={this.state.showAll} keys={this.state.keys} onChangeShowField={this.onChangeShowField} onChangeShowAll={this.onChangeShowAll}/>
+                    <Sidebar keys={this.state.keys}
+                             showAll={this.state.showAll}
+                             onChangeShowField={this.onChangeShowField}
+                             onChangeShowAll={this.onChangeShowAll}
+                    />
 
                     <MainPanel handlePreviousClick={this.handlePreviousClick}
                                handleNextClick={this.handleNextClick}
@@ -231,8 +265,8 @@ export default class Dashboard extends Component {
                                handleSearchInputChange={this.handleSearchInputChange}
                                handleSearchRequest={this.handleSearchRequest}
                                handleSearchInputClear={this.handleSearchInputClear}
+                               searchException={this.state.searchException}
                                showingSearch={this.state.showingSearch}
-
                     />
                 </div>
             </React.Fragment>
