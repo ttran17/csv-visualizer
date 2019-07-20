@@ -1,28 +1,23 @@
 import React, {Component} from "react";
 
-export default class MainPanel extends Component {
+export default class ItemView extends Component {
 
     render() {
         const row = this.props.row;
 
         const keyValuePairs = this.props.keys
+            .filter(k => k.display)
             .map(k => {
-                if (k.display) {
-                    return (
-                        <React.Fragment key={k.fieldname}>
-                            <dt>{k.fieldname}</dt>
-                            <dd>{row[k.fieldname]}</dd>
-                        </React.Fragment>
-                    );
-                }
-                return null;
-            })
-            .filter(obj => obj !== null);
-
+                return (
+                    <React.Fragment key={k.fieldname}>
+                        <dt>{k.fieldname}</dt>
+                        <dd>{row[k.fieldname]}</dd>
+                    </React.Fragment>
+                );
+            });
 
         const searchCSS = this.props.showingSearch ? "showing-search-results-info" : "hiding-search-results-info";
         const searchExceptionCSS = this.props.searchException ? "search-exception" : "no-search-exception"+"-"+searchCSS;
-
 
         return (
             <div className="col-sm-9 col-sm-offset-3 col-md-10 col-md-offset-2 main">

@@ -25,6 +25,10 @@ body {
   border: 0;
 }
 
+.csv-visualizer-toggle {
+  margin-left: 6px;
+}
+
 /*
  * Sidebar
  */
@@ -204,4 +208,13 @@ body {
   background-color: #f0ad4e;
   border-color: #eea236;
   color: white;
+}
+
+.hide-react-table {
+  display: none;
+}
+
+.ReactTable .rt-table .rt-td {
+  white-space: normal;
+  overflow: visible;
 }

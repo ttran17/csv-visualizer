@@ -4,9 +4,10 @@ import {csvParse} from "d3-dsv";
 
 import Navbar from "./Navbar";
 import Sidebar from "./Sidebar";
-import MainPanel from "./MainPanel";
+import ItemView from "./ItemView";
+import TableView from "./TableView";
 
-import CachedIndex from "./CachedIndex";
+import FlexSearch from "flexsearch";
 
 export default class Dashboard extends Component {
     constructor(props) {
@@ -25,10 +26,11 @@ export default class Dashboard extends Component {
             dataLengthOG: 0,
             dataOG: [],
             searchException: false,
-            showingSearch: false
+            showingSearch: false,
+            visualizer: true
         };
 
-        this.uuid = CachedIndex.getDefaultUuidKey(); // TODO: someday make absolutely certain this is unique uuid ...
+        this.uuid = "fsuuid"; // TODO: someday make absolutely certain this is unique uuid ...
         this.cachedIndex = null;
     }
 
@@ -48,7 +50,7 @@ export default class Dashboard extends Component {
                     search: false
                 }
             });
-            const data = rawdata.map((row,i) => Object.assign({}, {[this.uuid]: i}, row));
+            const data = rawdata.map((row,i) => Object.assign({}, {[this.uuid]: i+1}, row));
             this.setState({
                 currentFilename: filename,
                 fileSize: fileSize,
@@ -115,7 +117,7 @@ export default class Dashboard extends Component {
             if (state.actualIndex > 0) {
                 const nextIndex = state.actualIndex - 1;
                 return {
-                    absoluteIndex: state.data[nextIndex][this.uuid]+1,
+                    absoluteIndex: state.data[nextIndex][this.uuid],
                     actualIndex: nextIndex,
                     displayIndex: nextIndex + 1,
                     inputIndex: nextIndex + 1
@@ -135,7 +137,7 @@ export default class Dashboard extends Component {
             if (state.actualIndex >= 0 && state.actualIndex < state.data.length-1) {
                 const nextIndex = state.actualIndex + 1;
                 return {
-                    absoluteIndex: state.data[nextIndex][this.uuid]+1,
+                    absoluteIndex: state.data[nextIndex][this.uuid],
                     actualIndex: nextIndex,
                     displayIndex: nextIndex + 1,
                     inputIndex: nextIndex + 1
@@ -159,7 +161,7 @@ export default class Dashboard extends Component {
                 const index = +state.inputIndex;
                 if (Number.isInteger(index) && index > 0 && index <= state.data.length) {
                     return {
-                        absoluteIndex: state.data[index-1][this.uuid]+1,
+                        absoluteIndex: state.data[index-1][this.uuid],
                         actualIndex: index-1,
                         displayIndex: index
                     }
@@ -200,13 +202,24 @@ export default class Dashboard extends Component {
 
     handleSearchRequest = (event) => {
         if (event.key === "Enter") {
-            if (this.state.inputSearch.length == 0) {
-                    this.handleSearchInputClear();
+            if (this.state.inputSearch.length === 0) {
+                this.handleSearchInputClear();
                 return;
             }
 
             if (this.cachedIndex === null) {
-                this.cachedIndex = CachedIndex.actuallyNotCached(this.state.dataOG.map(d => d), this.state.keys.map(k => k.fieldname), this.uuid)
+                const docs = this.state.dataOG.map(d => d);
+                const keys = this.state.keys.map(k => k.fieldname);
+                const uuid = this.uuid;
+                this.cachedIndex = new FlexSearch({
+                    doc: {
+                        id: uuid,
+                        field: keys
+                    }
+                });
+                console.log("building flexsearch index");
+                this.cachedIndex.add(docs);
+                console.log("done building flexsearch index");
             }
 
             const searchKeys = this.state.keys.filter(k => k.display).map(k => k.fieldname);
@@ -215,7 +228,6 @@ export default class Dashboard extends Component {
                 alert("Cannot search without choosing at least one field to display");
                 return;
             }
-            // const results = this.cachedIndex.search(this.state.data, searchKeys, this.state.inputSearch);
             const results = this.cachedIndex.search({
                 query: this.state.inputSearch,
                 field: searchKeys
@@ -226,7 +238,7 @@ export default class Dashboard extends Component {
                 return;
             }
             this.setState({
-                absoluteIndex: results[0][this.uuid]+1,
+                absoluteIndex: results[0][this.uuid],
                 actualIndex: 0,
                 displayIndex: 1,
                 inputIndex: 1,
@@ -234,14 +246,28 @@ export default class Dashboard extends Component {
                 searchException: false,
                 showingSearch: true
             });
-            console.log(results[0]);
+            // console.log(results[0]);
         }
     };
 
+    handleCsvVisualizerToggle = () => {
+        this.setState(state => {
+            return {
+                visualizer: !state.visualizer
+            }
+        });
+    };
+
     render() {
+        const displayCSS = this.state.visualizer ? "hide-item-view" : "hide-react-table";
+
         return (
             <React.Fragment>
-                <Navbar currentFilename={this.state.currentFilename} handleOnFileChange={this.handleOnFileChange} />
+                <Navbar currentFilename={this.state.currentFilename}
+                        handleOnFileChange={this.handleOnFileChange}
+                        visualizer={this.state.visualizer}
+                        handleCsvVisualizerToggle={this.handleCsvVisualizerToggle}
+                />
 
                 <div className="row">
                     <Sidebar keys={this.state.keys}
@@ -250,24 +276,34 @@ export default class Dashboard extends Component {
                              onChangeShowAll={this.onChangeShowAll}
                     />
 
-                    <MainPanel handlePreviousClick={this.handlePreviousClick}
-                               handleNextClick={this.handleNextClick}
-                               absoluteIndex={this.state.absoluteIndex}
-                               displayIndex={this.state.displayIndex}
-                               inputIndex={this.state.inputIndex}
-                               handleTextInputChange={this.handleTextInputChange}
-                               handleOnSubmit={this.handleOnSubmit}
-                               dataLengthOG={this.state.dataLengthOG}
-                               dataLength={this.state.data.length}
-                               row={this.state.data[this.state.actualIndex]}
-                               keys={this.state.keys}
-                               inputSearch={this.state.inputSearch}
-                               handleSearchInputChange={this.handleSearchInputChange}
-                               handleSearchRequest={this.handleSearchRequest}
-                               handleSearchInputClear={this.handleSearchInputClear}
-                               searchException={this.state.searchException}
-                               showingSearch={this.state.showingSearch}
-                    />
+                    {!this.state.visualizer &&
+                        <ItemView handlePreviousClick={this.handlePreviousClick}
+                                  handleNextClick={this.handleNextClick}
+                                  absoluteIndex={this.state.absoluteIndex}
+                                  displayIndex={this.state.displayIndex}
+                                  inputIndex={this.state.inputIndex}
+                                  handleTextInputChange={this.handleTextInputChange}
+                                  handleOnSubmit={this.handleOnSubmit}
+                                  dataLengthOG={this.state.dataLengthOG}
+                                  dataLength={this.state.data.length}
+                                  row={this.state.data[this.state.actualIndex]}
+                                  keys={this.state.keys}
+                                  inputSearch={this.state.inputSearch}
+                                  handleSearchInputChange={this.handleSearchInputChange}
+                                  handleSearchRequest={this.handleSearchRequest}
+                                  handleSearchInputClear={this.handleSearchInputClear}
+                                  searchException={this.state.searchException}
+                                  showingSearch={this.state.showingSearch}
+                        />
+                    }
+
+                    {this.state.visualizer &&
+                        <TableView
+                            data={this.state.data}
+                            keys={this.state.keys}
+                        />
+                    }
+
                 </div>
             </React.Fragment>
         );
