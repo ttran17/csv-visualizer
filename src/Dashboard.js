@@ -108,9 +108,8 @@ export default class Dashboard extends Component {
         })
     };
 
-    handlePreviousClick = (e) => {
-        if (e.detail === 0) {
-            // https://github.com/facebook/react/issues/3907
+    handlePreviousClick = (event) => {
+        if (!(event.type === 'click' || event.key === "Enter")) {
             return;
         }
         this.setState(state => {
@@ -128,9 +127,8 @@ export default class Dashboard extends Component {
         });
     };
 
-    handleNextClick = (e) => {
-        if (e.detail === 0) {
-            // https://github.com/facebook/react/issues/3907
+    handleNextClick = (event) => {
+        if (!(event.type === 'click' || event.key === "Enter")) {
             return;
         }
         this.setState(state => {

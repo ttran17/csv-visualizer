@@ -25,6 +25,12 @@ body {
   border: 0;
 }
 
+#react-framework {
+  margin-top: -5px;
+  width: 30px;
+  height: 30px;
+}
+
 .csv-visualizer-toggle {
   margin-left: 6px;
 }
@@ -112,6 +118,7 @@ body {
 
 .main-panel-form-group-1 {
   display: inline-block;
+  margin-left: 3px;
 }
 
 .main-panel-form-group-1 .btn-default {
@@ -125,7 +132,7 @@ body {
 }
 
 .main-panel-form-group-2 input {
-  margin-left: 3px;
+  margin-right: 3px;
 }
 
 .main .page-header-2 input {
