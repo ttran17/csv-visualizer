@@ -27,7 +27,7 @@ export default class Dashboard extends Component {
             dataOG: [],
             searchException: false,
             showingSearch: false,
-            visualizer: true
+            visualizer: false
         };
 
         this.uuid = "fsuuid"; // TODO: someday make absolutely certain this is unique uuid ...
