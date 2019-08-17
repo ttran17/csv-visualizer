@@ -35,6 +35,10 @@ export default class Dashboard extends Component {
     }
 
     handleOnFileChange = (e) => {
+        if (e.target.files.length === 0) {
+            // handle "cancel" option
+            return;
+        }
         const file = e.target.files[0];
         const filename = file.name;
         const fileSize = file.size/1000000;
