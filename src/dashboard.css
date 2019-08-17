@@ -31,6 +31,10 @@ body {
   height: 30px;
 }
 
+.file-browsing-icon {
+  padding-right: 5px;
+}
+
 .csv-visualizer-toggle {
   margin-left: 6px;
 }
