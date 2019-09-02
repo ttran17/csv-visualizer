@@ -31,8 +31,12 @@ body {
   height: 30px;
 }
 
-.file-browsing-icon {
+.file-browsing-icon, .file-save-icon {
   padding-right: 5px;
+}
+
+label.btn.btn-default.btn-file {
+  margin-left: 6px;
 }
 
 .csv-visualizer-toggle {

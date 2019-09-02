@@ -75,6 +75,22 @@ export default class Dashboard extends Component {
         reader.readAsText(file);
     };
 
+    handleOnFileSave = () => {
+        if (this.state.fileSize == 0 || this.state.dataOG.length == 0) {
+            // Don't save empty file ...
+            return;
+        }
+        const filename = this.state.currentFilename.replace(".csv",".json");
+        const fileData = JSON.stringify(this.state.dataOG, null, 4);
+        const blob = new Blob([fileData], {type: "application/json"});
+        const url = URL.createObjectURL(blob);
+        const a = document.createElement('a');
+        a.download = filename;
+        a.href = url;
+        a.click();
+        URL.revokeObjectURL(url);
+    };
+
     onChangeShowAll = (event) => {
         const showAll = event.target.checked;
         const keys = this.state.keys.map(k => {
@@ -267,6 +283,7 @@ export default class Dashboard extends Component {
             <React.Fragment>
                 <Navbar currentFilename={this.state.currentFilename}
                         handleOnFileChange={this.handleOnFileChange}
+                        handleOnFileSave={this.handleOnFileSave}
                         visualizer={this.state.visualizer}
                         handleCsvVisualizerToggle={this.handleCsvVisualizerToggle}
                 />
