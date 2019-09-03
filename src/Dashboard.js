@@ -8,6 +8,7 @@ import ItemView from "./ItemView";
 import TableView from "./TableView";
 
 import FlexSearch from "flexsearch";
+import sanitizeHtml from "sanitize-html";
 
 export default class Dashboard extends Component {
     constructor(props) {
@@ -95,13 +96,13 @@ export default class Dashboard extends Component {
         this.setState(state => {
             const data = state.data.map(d => {
                 if (d.fsuuid === uuid) {
-                    return Object.assign({}, d, {[fieldname]: evt.target.value});
+                    return Object.assign({}, d, {[fieldname]: sanitizeHtml(evt.target.value)});
                 }
                 return d;
             });
             const dataOG = state.dataOG.map(d => {
                 if (d.fsuuid === uuid) {
-                    return Object.assign({}, d, {[fieldname]: evt.target.value});
+                    return Object.assign({}, d, {[fieldname]: sanitizeHtml(evt.target.value)});
                 }
                 return d;
             });
