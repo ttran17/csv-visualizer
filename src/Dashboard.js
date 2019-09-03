@@ -91,6 +91,27 @@ export default class Dashboard extends Component {
         URL.revokeObjectURL(url);
     };
 
+    handleItemChange = (evt, uuid, fieldname) => {
+        this.setState(state => {
+            const data = state.data.map(d => {
+                if (d.fsuuid === uuid) {
+                    return Object.assign({}, d, {[fieldname]: evt.target.value});
+                }
+                return d;
+            });
+            const dataOG = state.dataOG.map(d => {
+                if (d.fsuuid === uuid) {
+                    return Object.assign({}, d, {[fieldname]: evt.target.value});
+                }
+                return d;
+            });
+            return {
+                data: data,
+                dataOG: dataOG
+            }
+        });
+    };
+
     onChangeShowAll = (event) => {
         const showAll = event.target.checked;
         const keys = this.state.keys.map(k => {
@@ -225,7 +246,8 @@ export default class Dashboard extends Component {
                 return;
             }
 
-            if (this.cachedIndex === null) {
+            // if (this.cachedIndex === null) {
+            {
                 const docs = this.state.dataOG.map(d => d);
                 const keys = this.state.keys.map(k => k.fieldname);
                 const uuid = this.uuid;
@@ -303,6 +325,7 @@ export default class Dashboard extends Component {
                                   inputIndex={this.state.inputIndex}
                                   handleTextInputChange={this.handleTextInputChange}
                                   handleOnSubmit={this.handleOnSubmit}
+                                  handleItemChange={this.handleItemChange}
                                   dataLengthOG={this.state.dataLengthOG}
                                   dataLength={this.state.data.length}
                                   row={this.state.data[this.state.actualIndex]}

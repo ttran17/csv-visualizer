@@ -1,5 +1,5 @@
 import React, {Component} from "react";
-import ReactDOM from "react-dom";
+import EditableDD from "./EditableDD";
 import Modal from "react-modal";
 
 export default class ItemView extends Component {
@@ -25,29 +25,15 @@ export default class ItemView extends Component {
         this.setState({modalIsOpen: false});
     };
 
-    // TODO: use modals instead of alerts
-    handleInfoClick = () => {
-        alert(`Unlike the "search" feature in the table view which searches by columns, this search attempts to find a match across all columns. For large datasets, the first search will be slow for the first query as an index must be built. Subsequent queries will use this index and be relatively fast.
-            
-            Notes:
-              1. The user must press "enter" to perform a search
-              2. Any error will highlight the search box in orange
-              3. Successful searches will highlight search box in cornflower blue
-              
-            Caveat emptor: An orange search box denotes an error. The app will be in an inconsistent state when you see the orange search box. While UI elements will continue to work and data can still be perused results may be confusing. CLEAR the search box or FIX the search string and resubmit before resuming!
-        `);
-    };
-
     render() {
         const row = this.props.row;
-
         const keyValuePairs = this.props.keys
             .filter(k => k.display)
             .map(k => {
                 return (
                     <React.Fragment key={k.fieldname}>
                         <dt>{k.fieldname}</dt>
-                        <dd>{row[k.fieldname]}</dd>
+                        <EditableDD uuid={row["fsuuid"]} fieldname={k.fieldname} html={row[k.fieldname]} handleItemChange={this.props.handleItemChange}></EditableDD>
                     </React.Fragment>
                 );
             });
