@@ -48,7 +48,7 @@ export default class Dashboard extends Component {
 
         reader.onload = (e) => {
             const rawdata = csvParse(e.target.result);
-            const keys = Object.keys(rawdata[0]).map(k => {
+            const keys = rawdata.columns.map(k => {
                 return {
                     fieldname: k,
                     display: true,
