@@ -81,7 +81,7 @@ export default class Dashboard extends Component {
     };
 
     handleOnFileSave = () => {
-        if (this.state.fileSize == 0 || this.state.dataOG.length == 0) {
+        if (this.state.fileSize === 0 || this.state.dataOG.length === 0) {
             // Don't save empty file ...
             return;
         }
@@ -310,8 +310,6 @@ export default class Dashboard extends Component {
     };
 
     render() {
-        const displayCSS = this.state.visualizer ? "hide-item-view" : "hide-react-table";
-
         return (
             <React.Fragment>
                 <Navbar currentFilename={this.state.currentFilename}

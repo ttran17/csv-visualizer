@@ -3,9 +3,6 @@ import EditableDD from "./EditableDD";
 import SearchHelpModal from "./SearchHelpModal";
 
 export default class ItemView extends Component {
-    constructor(props) {
-        super(props);
-    }
 
     render() {
         const row = this.props.row;
