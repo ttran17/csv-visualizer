@@ -44,11 +44,15 @@ export default class Dashboard extends Component {
         const filename = file.name;
         const fileSize = file.size/1000000;
 
+        // <input> element will only accept either .csv or .json
+        const isCSV = filename.toLowerCase().endsWith(".csv");
+
         let reader = new FileReader();
 
         reader.onload = (e) => {
-            const rawdata = csvParse(e.target.result);
-            const keys = rawdata.columns.map(k => {
+            const rawdata = isCSV ? csvParse(e.target.result) : JSON.parse(e.target.result);
+            const columns = isCSV ? rawdata.columns : Object.keys(rawdata[0]);
+            const keys = columns.map(k => {
                 return {
                     fieldname: k,
                     display: true,
@@ -81,9 +85,15 @@ export default class Dashboard extends Component {
             // Don't save empty file ...
             return;
         }
+        // Strip out 'fsuuid' key/value pair
+        const data = this.state.dataOG.map(d => {
+            let e = Object.assign({}, d);
+            delete e[this.uuid];
+            return e;
+        });
         const filename = this.state.currentFilename.replace(".csv",".json");
-        const fileData = JSON.stringify(this.state.dataOG, null, 4);
-        const blob = new Blob([fileData], {type: "application/json"});
+        const filedata = JSON.stringify(data, null, 4);
+        const blob = new Blob([filedata], {type: "application/json"});
         const url = URL.createObjectURL(blob);
         const a = document.createElement('a');
         a.download = filename;

@@ -28,7 +28,7 @@ export default class Navbar extends Component {
                         <div className="navbar-form navbar-right">
                             <label className="btn btn-default btn-file">
                                 <span className="glyphicon glyphicon-file file-browsing-icon"></span>
-                                Browse <input id="navbar-input-file" type="file" accept=".csv" onChange={this.props.handleOnFileChange}/>
+                                Browse <input id="navbar-input-file" type="file" accept=".csv, .json" onChange={this.props.handleOnFileChange}/>
                             </label>
                             <label className="btn btn-default btn-file" onClick={this.props.handleOnFileSave}>
                                 <span className="glyphicon glyphicon-save-file file-save-icon"></span>
