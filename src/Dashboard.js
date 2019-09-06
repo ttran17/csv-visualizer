@@ -30,8 +30,8 @@ export default class Dashboard extends Component {
             showingSearch: false,
             visualizer: false,
             saveOptions: [
-                {key: "csv", val: false, text: "Save as CSV", fn: filename => filename.replace(".json",".csv")},
-                {key: "json", val: true, text: "Save as JSON", fn: filename => filename.replace(".csv",".json")},
+                {key: "csv", val: false, text: "Save as CSV", fn: filename => filename.replace(/(\s*[\(\d*\)]*?\.(csv|json)$)/,".csv")},
+                {key: "json", val: true, text: "Save as JSON", fn: filename => filename.replace(/(\s*[\(\d*\)]*?\.(csv|json)$)/,".json")},
                 {key: "original", val: false, text: "Save as original format", fn: filename => filename}
             ]
         };
@@ -97,6 +97,7 @@ export default class Dashboard extends Component {
             return e;
         });
         const blobInfo = this.getBlobInfo(this.state.saveOptions, this.state.currentFilename);
+        console.log(blobInfo);
         const filedata = blobInfo.key === "json" ? JSON.stringify(data, null, 4) : csvFormat(data);
         const blob = new Blob([filedata], {type: blobInfo.contentType});
         const url = URL.createObjectURL(blob);
