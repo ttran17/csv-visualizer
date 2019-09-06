@@ -97,7 +97,6 @@ export default class Dashboard extends Component {
             return e;
         });
         const blobInfo = this.getBlobInfo(this.state.saveOptions, this.state.currentFilename);
-        console.log(blobInfo);
         const filedata = blobInfo.key === "json" ? JSON.stringify(data, null, 4) : csvFormat(data);
         const blob = new Blob([filedata], {type: blobInfo.contentType});
         const url = URL.createObjectURL(blob);
