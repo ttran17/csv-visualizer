@@ -1,6 +1,6 @@
 import React, {Component} from "react";
 
-import {csvParse} from "d3-dsv";
+import {csvParse, csvFormat} from "d3-dsv";
 
 import Navbar from "./Navbar";
 import Sidebar from "./Sidebar";
@@ -28,7 +28,12 @@ export default class Dashboard extends Component {
             dataOG: [],
             searchException: false,
             showingSearch: false,
-            visualizer: false
+            visualizer: false,
+            saveOptions: [
+                {key: "csv", val: false, text: "Save as CSV", fn: filename => filename.replace(".json",".csv")},
+                {key: "json", val: true, text: "Save as JSON", fn: filename => filename.replace(".csv",".json")},
+                {key: "original", val: false, text: "Save as original format", fn: filename => filename}
+            ]
         };
 
         this.uuid = "fsuuid"; // TODO: someday make absolutely certain this is unique uuid ...
@@ -91,15 +96,44 @@ export default class Dashboard extends Component {
             delete e[this.uuid];
             return e;
         });
-        const filename = this.state.currentFilename.replace(".csv",".json");
-        const filedata = JSON.stringify(data, null, 4);
-        const blob = new Blob([filedata], {type: "application/json"});
+        const blobInfo = this.getBlobInfo(this.state.saveOptions, this.state.currentFilename);
+        const filedata = blobInfo.key === "json" ? JSON.stringify(data, null, 4) : csvFormat(data);
+        const blob = new Blob([filedata], {type: blobInfo.contentType});
         const url = URL.createObjectURL(blob);
         const a = document.createElement('a');
-        a.download = filename;
+        a.download = blobInfo.filename;
         a.href = url;
         a.click();
         URL.revokeObjectURL(url);
+    };
+
+    getBlobInfo = (saveOptions, currentFilename) => {
+        for (let opt of saveOptions) {
+            if (opt.val) {
+                return {
+                    key: opt.key,
+                    filename: opt.fn(currentFilename),
+                    contentType: opt.key === "json" ? "application/json" : "text/csv"
+                }
+            }
+        }
+    };
+
+    handleFileSaveOptions = (e, opt) => {
+        this.setState(state => {
+            const saveOptions = state.saveOptions.map(o => {
+                if (o.key === opt.key && !o.val) {
+                    return Object.assign({}, o,{val: true});
+                }
+                if (o.key === opt.key && o.val) {
+                    return o;
+                }
+                return Object.assign({}, o,{val: false});
+            });
+            return {
+                saveOptions: saveOptions
+            }
+        })
     };
 
     handleItemChange = (evt, uuid, fieldname) => {
@@ -315,6 +349,8 @@ export default class Dashboard extends Component {
                 <Navbar currentFilename={this.state.currentFilename}
                         handleOnFileChange={this.handleOnFileChange}
                         handleOnFileSave={this.handleOnFileSave}
+                        saveOptions={this.state.saveOptions}
+                        handleFileSaveOptions={this.handleFileSaveOptions}
                         visualizer={this.state.visualizer}
                         handleCsvVisualizerToggle={this.handleCsvVisualizerToggle}
                 />

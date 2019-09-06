@@ -35,6 +35,10 @@ body {
   padding-right: 5px;
 }
 
+#file-save-settings-show-menu {
+  display: block;
+}
+
 label.btn.btn-default.btn-file {
   margin-left: 6px;
 }
@@ -93,6 +97,24 @@ label.btn.btn-default.btn-file {
   padding-top: 6px;
   padding-bottom: 6px;
   display: inline-block;
+}
+
+.navbar-form .checkbox.my-checkbox input[type="radio"] {
+  position: absolute;
+  margin: 3px 0 0;
+}
+
+#file-save-settings-show-menu .checkbox{
+  display: block;
+  padding: 3px 15px;
+  clear: both;
+  font-weight: 400;
+  color: #333333;
+  white-space: nowrap;
+}
+
+.file-save-settings-li {
+  margin-left: 20px;
 }
 
 .sidebar .checkbox.checkbox-2 {
