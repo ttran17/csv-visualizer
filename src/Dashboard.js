@@ -31,8 +31,8 @@ export default class Dashboard extends Component {
             visualizer: false,
             saveOptions: [
                 {key: "csv", val: false, text: "Save as CSV", fn: filename => filename.replace(/(\s*[\(\d*\)]*?\.(csv|json)$)/,".csv")},
-                {key: "json", val: true, text: "Save as JSON", fn: filename => filename.replace(/(\s*[\(\d*\)]*?\.(csv|json)$)/,".json")},
-                {key: "original", val: false, text: "Save as original format", fn: filename => filename}
+                {key: "json", val: true, text: "Save as JSON", fn: filename => filename.replace(/(\s*[\(\d*\)]*?\.(csv|json)$)/,".json")} //,
+                // {key: "original", val: false, text: "Save as original format", fn: filename => filename} // TODO: figure out the correct regex ...
             ]
         };
 
