@@ -1,6 +1,6 @@
 self.__precacheManifest = (self.__precacheManifest || []).concat([
   {
-    "revision": "e4aedc1101cdc3f565d1beb1c99524fe",
+    "revision": "4b9d92eb39871c565d10b25d78af9bdb",
     "url": "/csv-visualizer/index.html"
   },
   {
@@ -8,16 +8,16 @@ self.__precacheManifest = (self.__precacheManifest || []).concat([
     "url": "/csv-visualizer/static/css/2.39747f51.chunk.css"
   },
   {
-    "revision": "ed02670c4db1f66dcd39",
-    "url": "/csv-visualizer/static/css/main.be2ebcc6.chunk.css"
+    "revision": "d9241bf7c24944c14ed4",
+    "url": "/csv-visualizer/static/css/main.77beb4df.chunk.css"
   },
   {
     "revision": "c4f1130a5cb37ee21823",
     "url": "/csv-visualizer/static/js/2.104dd8bf.chunk.js"
   },
   {
-    "revision": "ed02670c4db1f66dcd39",
-    "url": "/csv-visualizer/static/js/main.387725f9.chunk.js"
+    "revision": "d9241bf7c24944c14ed4",
+    "url": "/csv-visualizer/static/js/main.adac2d01.chunk.js"
   },
   {
     "revision": "660ff3a344148ade51a9",
