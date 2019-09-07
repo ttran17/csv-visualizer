@@ -1,6 +1,6 @@
 {
   "name": "csv-visualizer",
-  "version": "1.0.0",
+  "version": "2.0.0",
   "private": true,
   "homepage": "http://ttran17.github.io/csv-visualizer",
   "dependencies": {
