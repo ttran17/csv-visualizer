@@ -1,0 +1,57 @@
+/*
+ * Darcula ...
+ */
+
+html, body {
+    background: #21222C;
+    color: #f8f8f2;
+}
+
+.navbar-inverse {
+    background-image: linear-gradient(to bottom, #3c3c3c 0%, #282a36 100%);
+}
+
+@media (min-width: 768px) {
+    .sidebar {
+        background: #21222C;
+        color: #f8f8f2;
+        border-right: 1px solid #a9a9a9;
+    }
+}
+
+.panel-body {
+    color: #3c3c3c;
+}
+
+.main-panel-form-group1 {
+    color: #3c3c3c;
+}
+
+.page-header {
+    border-bottom: 1px solid #a9a9a9;
+}
+
+.rt-th {
+    color: #3c3c3c;
+}
+
+dt, .rt-resizable-header-content {
+    color: #ffb86c;
+}
+
+dd, .rt-td {
+    color: #9ffa43;
+}
+
+.-previous, .-next {
+    background-image: linear-gradient(to bottom, #fff 0%, #e0e0e0 100%);
+    border-radius: 3px;
+}
+
+.ReactTable .-pagination .-btn, .-pageJump {
+    color: #333;
+}
+
+.ReactTable .-pagination input, .ReactTable .-pagination select {
+    color: #000;
+}

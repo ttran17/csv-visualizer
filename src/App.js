@@ -4,7 +4,9 @@ import 'bootstrap/dist/css/bootstrap.css';
 import 'bootstrap/dist/css/bootstrap-theme.css';
 
 import Dashboard from "./Dashboard";
-import './dashboard.css';
+import "./dashboard.css";
+
+import "./darcula.css";
 
 function App() {
     return (
